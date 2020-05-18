@@ -118,7 +118,7 @@ app.post("/repositories/:id/like", (request, response) => {
         ++repositories[repositoryIndex].like : 1
 
   return response.status(200).send({
-    'message': 'Repositório atualizado com sucesso!',
+    'message': 'Like adicionado com sucesso!',
     'status': 'OK',
     'code': '200'
   })
