@@ -10,6 +10,8 @@ app.use(cors());
 
 const repositories = [];
 
+const likes = []
+
 app.get("/repositories", (request, response) => {
   // TODO
 
@@ -117,11 +119,9 @@ app.post("/repositories/:id/like", (request, response) => {
   repositories[repositoryIndex].like = repositories[repositoryIndex].like ? 
         ++repositories[repositoryIndex].like : 1
 
-  return response.status(200).send({
-    'message': 'Like adicionado com sucesso!',
-    'status': 'OK',
-    'code': '200'
-  })
+  repository = repositories[repositoryIndex]
+
+  return response.status(200).send(repository)
 });
 
 module.exports = app;
