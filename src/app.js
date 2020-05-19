@@ -10,17 +10,11 @@ app.use(cors());
 
 const repositories = [];
 
-const likes = []
 
 app.get("/repositories", (request, response) => {
   // TODO
 
-  return response.status(200).send({
-    'message': 'Repositórios listados com sucesso!',
-    'status': 'OK',
-    'code': '200',
-    repositories
-  })
+  return response.status(200).send(repositories)
 });
 
 app.post("/repositories", (request, response) => {
@@ -31,32 +25,24 @@ app.post("/repositories", (request, response) => {
     id: uuid(), 
     url,
     title,
-    techs
+    techs,
+    likes: 0
   }
   
   repositories.push(repository)
 
-  return response.status(201).send({
-    'message': 'Repositório criado com sucesso!',
-    'status': 'CREATED',
-    'code': '201',
-    repository: {
-      url,
-      title,
-      techs
-    }
-  })
+  return response.status(200).send(repository)
 });
 
 app.put("/repositories/:id", (request, response) => {
-  // TODO
+
   const { id } = request.params
-  const { url, title, techs } = request.body
+  const { url, title, techs, likes } = request.body
 
   const repositoryIndex = repositories.findIndex(repository => repository.id === id)
 
   if(repositoryIndex < 0) {
-    return response.status(404).send({
+    return response.status(400).send({
       'message': 'Repositório não encontrado!',
       'status': 'NOT FOUND',
       'code': '404'
@@ -64,29 +50,26 @@ app.put("/repositories/:id", (request, response) => {
   }
   
   const repository = {
+    id,
     url,
     title,
-    techs
+    techs,
+    likes: repositories[repositoryIndex].likes
   }
 
   repositories[repositoryIndex] = repository
 
-  return response.status(200).send({
-    'message': 'Repositório atualizado com sucesso!',
-    'status': 'OK',
-    'code': '200',
-    repository
-  })
+  return response.status(200).send(repository)
 });
 
 app.delete("/repositories/:id", (request, response) => {
-  // TODO
+
   const { id } = request.params
 
   const repositoryIndex = repositories.findIndex(repository => repository.id === id)
 
   if(repositoryIndex < 0) {
-    return response.status(404).send({
+    return response.status(400).send({
       'message': 'Repositório não encontrado!',
       'status': 'NOT FOUND',
       'code': '404'
@@ -95,7 +78,7 @@ app.delete("/repositories/:id", (request, response) => {
 
   repositories.splice(repositoryIndex, 1)
 
-  return response.status(200).send({
+  return response.status(204).send({
     'message': 'Repositório deletado com sucesso!',
     'status': 'OK',
     'code': '200'
@@ -103,21 +86,20 @@ app.delete("/repositories/:id", (request, response) => {
 });
 
 app.post("/repositories/:id/like", (request, response) => {
-  // TODO
+
   const { id } = request.params
 
   const repositoryIndex = repositories.findIndex(repository => repository.id === id)
 
   if(repositoryIndex < 0) {
-    return response.status(404).send({
+    return response.status(400).send({
       'message': 'Repositório não encontrado!',
       'status': 'NOT FOUND',
       'code': '404'
     })
   }
 
-  repositories[repositoryIndex].like = repositories[repositoryIndex].like ? 
-        ++repositories[repositoryIndex].like : 1
+  ++repositories[repositoryIndex].likes
 
   repository = repositories[repositoryIndex]
 
